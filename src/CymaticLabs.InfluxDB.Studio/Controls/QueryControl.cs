@@ -34,6 +34,8 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             set { queryEditor.Text = value; }
         }
 
+        public string TimeDisplay { get; set; }
+
         #endregion Properties
 
         #region Constructors
@@ -79,7 +81,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             stopWatch.Restart();
 
             // Execute the query
-            var results = await InfluxDbClient.QueryAsync(Database, query);
+            var results = await InfluxDbClient.QueryAsync(Database, query, TimeDisplay);
 
             // Stop timing...
             stopWatch.Stop();

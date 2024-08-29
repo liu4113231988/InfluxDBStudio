@@ -18,7 +18,7 @@ namespace CymaticLabs.InfluxDB.Studio
     public partial class AppForm : Form
     {
         #region Enums
-        
+
         /// <summary>
         /// Different InfluxDB types represented by tree view nodes.
         /// </summary>
@@ -190,7 +190,7 @@ namespace CymaticLabs.InfluxDB.Studio
         {
             await ExecuteCurrentRequest();
         }
-        
+
         // Query -> New Query
         private void newQueryToolStripMenuItem2_Click(object sender, EventArgs e)
         {
@@ -494,7 +494,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Show Retention Policies
-        private  async void showRetentionPoliciesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void showRetentionPoliciesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var node = connectionsTreeView.SelectedNode;
             if (node == null) return;
@@ -675,7 +675,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 DisplayException(ex);
             }
         }
-            
+
 
         // Handles the update of a connection
         private async void ManageConnectionsDialog_ConnectionUpdated(InfluxDbConnection connection)
@@ -824,7 +824,7 @@ namespace CymaticLabs.InfluxDB.Studio
                     case InfluxDbNodeTypes.Database:
                         await RenderMeasurements(node, client);
                         break;
-                    
+
                 }
             }
             catch (Exception ex)
@@ -1066,7 +1066,7 @@ namespace CymaticLabs.InfluxDB.Studio
 
                 // Really nothing to disconnect, just remove the node
                 connectionsTreeView.Nodes.Remove(node);
-                
+
                 // Update UI
                 UpdateUIState();
             }
@@ -1123,7 +1123,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 continousQueryControl.Database = database;
 
                 // Add a tab with a query control in it
-                tabControl.AddTabWithControl(connection.Name + "." + database + " CQs", 
+                tabControl.AddTabWithControl(connection.Name + "." + database + " CQs",
                     continousQueryControl, Properties.Resources.ContinuousQuery);
 
                 UpdateUIState();
@@ -1235,7 +1235,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 var database = node.Parent.Text;
                 var measurement = node.Text;
 
-                
+
                 // Create a new series control
                 var seriesControl = new SeriesControl();
                 seriesControl.InfluxDbClient = client;
@@ -1243,7 +1243,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 seriesControl.Measurement = measurement;
 
                 // Add a tab with a series control in it
-                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".series", 
+                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".series",
                     seriesControl, Properties.Resources.Series);
 
                 // Update UI
@@ -1275,7 +1275,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 tagKeysControl.Measurement = measurement;
 
                 // Add a tab with a tag keys control in it
-                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".tag_keys", 
+                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".tag_keys",
                     tagKeysControl, Properties.Resources.TagKeys);
 
                 // Update UI
@@ -1307,7 +1307,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 tagValuesControl.Measurement = measurement;
 
                 // Add a tab with a tag values control in it
-                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".tag_values", 
+                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".tag_values",
                     tagValuesControl, Properties.Resources.TagValues);
 
                 // Update UI
@@ -1339,7 +1339,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 fieldKeysControl.Measurement = measurement;
 
                 // Add a tab with a query control in it
-                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".field_keys", 
+                tabControl.AddTabWithControl(connection.Name + "." + measurement + ".field_keys",
                     fieldKeysControl, Properties.Resources.FieldKeys);
 
                 // Update UI
@@ -1484,6 +1484,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 var queryControl = new QueryControl();
                 queryControl.InfluxDbClient = client;
                 queryControl.Database = database;
+                queryControl.TimeDisplay = Settings.TimeDisplay;
                 queryControl.EditorText = string.Format("SELECT * FROM \"{0}\" WHERE time > now() - 5m", measurement);
 
                 // Add a tab with a query control in it
@@ -1589,6 +1590,20 @@ namespace CymaticLabs.InfluxDB.Studio
             {
                 // day-first
                 dateFormatComboBox.SelectedIndex = 1;
+            }
+            if (Settings.TimeDisplay == AppSettings.TimeDisplayDefault)
+            {
+                // default datetime string
+                cbxTimeDisplay.SelectedIndex = 0;
+            }
+            else if (Settings.TimeDisplay == AppSettings.TimeDisplayMilliSecond)
+            {
+                // day-first
+                cbxTimeDisplay.SelectedIndex = 1;
+            }
+            else
+            {
+                cbxTimeDisplay.SelectedIndex = 2;
             }
 
             // Apply untrusted SSL
@@ -1847,7 +1862,7 @@ namespace CymaticLabs.InfluxDB.Studio
                     dbNode.Nodes.Add(placeholderNode);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DisplayException(ex);
             }
@@ -1879,7 +1894,7 @@ namespace CymaticLabs.InfluxDB.Studio
                 DisplayException(ex);
             }
         }
-        
+
         #endregion Rendering
 
         #endregion Connections
@@ -1971,5 +1986,10 @@ namespace CymaticLabs.InfluxDB.Studio
         #endregion Static
 
         #endregion Methods
+
+        private void cbxTimeDisplay_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Settings.TimeDisplay = cbxTimeDisplay.SelectedIndex == 0 ? null : cbxTimeDisplay.SelectedItem.ToString();
+        }
     }
 }

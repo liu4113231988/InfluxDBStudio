@@ -16,12 +16,12 @@ namespace CymaticLabs.InfluxDB.Studio
         /// <summary>
         /// Time format string for 12 hour time.
         /// </summary>
-        public const string TimeFormat12Hour = "hh:mm:ss tt";
+        public const string TimeFormat12Hour = "hh:mm:ss.fff tt";
 
         /// <summary>
         /// Time format string for 24 hour time.
         /// </summary>
-        public const string TimeFormat24Hour = "HH:mm:ss";
+        public const string TimeFormat24Hour = "HH:mm:ss.fff";
 
         /// <summary>
         /// Date format string for day-first dates.
@@ -32,6 +32,13 @@ namespace CymaticLabs.InfluxDB.Studio
         /// Date format string for month-first dates.
         /// </summary>
         public const string DateFormatMonth = "M/dd/yyyy";
+
+        public const string TimeDisplayDefault = "默认";
+
+        public const string TimeDisplaySecond = "s";
+
+        public const string TimeDisplayMilliSecond = "ms";
+
 
         // Whether or not to allow untrusted SSL certificates
         bool allowUntrustedSsl = false;
@@ -82,6 +89,21 @@ namespace CymaticLabs.InfluxDB.Studio
                 {
                     dateFormat = value;
                     Properties.Settings.Default.DateFormat = dateFormat;
+                    Properties.Settings.Default.Save(); // update settings file
+                }
+            }
+        }
+
+        private string timeDisplay;
+        public string TimeDisplay
+        {
+            get { return timeDisplay; }
+            set
+            {
+                if (timeDisplay != value)
+                {
+                    timeDisplay = value;
+                    Properties.Settings.Default.TimeDisplay = timeDisplay;
                     Properties.Settings.Default.Save(); // update settings file
                 }
             }

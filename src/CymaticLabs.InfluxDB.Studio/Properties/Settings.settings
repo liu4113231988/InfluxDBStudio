@@ -14,5 +14,8 @@
     <Setting Name="DateFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">M/dd/yyyy</Value>
     </Setting>
+    <Setting Name="TimeDisplay" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

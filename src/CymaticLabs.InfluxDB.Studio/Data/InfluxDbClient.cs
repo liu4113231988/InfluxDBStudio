@@ -187,7 +187,7 @@ namespace CymaticLabs.InfluxDB.Data
         /// <param name="database">The name of the database to query.</param>
         /// <param name="query">The query to execute.</param>
         /// <returns>The result of the query.</returns>
-        public abstract Task<IEnumerable<InfluxDbSeries>> QueryAsync(string database, string query);
+        public abstract Task<IEnumerable<InfluxDbSeries>> QueryAsync(string database, string query, string epochFormat = null);
 
         /// <summary>
         /// Gets the continuous queries for a given database.
@@ -323,7 +323,7 @@ namespace CymaticLabs.InfluxDB.Data
         /// <param name="username">The name of the user to grant privileges to.</param>
         /// <returns>The API response.</returns>
         public abstract Task<InfluxDbApiResponse> GrantAdministratorAsync(string username);
-        
+
         /// <summary>
         /// Revokes administrator privileges from a user.
         /// </summary>
