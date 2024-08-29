@@ -2,9 +2,9 @@ name: Build and Publish
   
 on:  
   push:  
-    branches: [ master ]  
-  pull_request:  
-    branches: [ master ]  
+    branches: [ master ]   
+    # tags:  
+    #   - 'v*' # 触发条件为push带有v前缀的标签
   
 jobs:  
   build:  
@@ -31,9 +31,35 @@ jobs:
     - name: Zip Release Artifacts  
       run: Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip  
       shell: pwsh  
+
+    - name: Get Version Info  
+      id: get_version_info  
+      run: |  
+        # 从标签中提取版本号，假设标签格式为v1.2.3  
+        $version = ${{ github.ref }} -replace "refs/tags/v", ""  
+        echo "::set-output name=version::$version"  
+      shell: pwsh  
   
-    - name: Upload artifact  
-      uses: actions/upload-artifact@v4  
+  
+    - name: Get Commit Info  
+      id: get_commit_info  
+      run: |  
+        # 获取最近一次commit的信息，你可以根据需要调整这个命令  
+        $commitInfo = git log -1 --pretty=format:"%s"  
+        echo "::set-output name=commit_message::$commitInfo"  
+      shell: pwsh  
+  
+    - name: Create Release  
+      id: create_release  
+      uses: ncipollo/release-action@v1  
       with:  
-        name: CymaticLabs.InfluxDB.Studio-Release  
-        path: ./InfluxDBStudio.zip
+        token: ${{ secrets.GITHUB_TOKEN }}  
+        artifacts: "./InfluxDBStudio.zip"  
+        tag: ${{ github.ref }}  
+        name: Release ${{ steps.get_version_info.outputs.version }}  
+        body: |  
+          Release version: ${{ steps.get_version_info.outputs.version }}  
+          This release includes the following changes:  
+          - ${{ steps.get_commit_info.outputs.commit_message }}  
+        draft: false  
+        prerelease: false
