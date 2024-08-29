@@ -1,13 +1,13 @@
-name: Build Control Total Ingenieria
+name: Build InfluxDBStudio
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
-  workflow_dispatch: # Allows manual triggering
+      - master
+  # workflow_dispatch: # Allows manual triggering
 
 jobs:
   build:
@@ -26,6 +26,7 @@ jobs:
         run: dotnet restore
 
       - name: Build application
+        cd src\CymaticLabs.InfluxDB.Studio
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish application
