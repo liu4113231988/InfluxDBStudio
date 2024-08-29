@@ -26,8 +26,9 @@ jobs:
         run: dotnet restore
 
       - name: Build application
-        cd src\CymaticLabs.InfluxDB.Studio
-        run: dotnet build --configuration Release --no-restore
+        run: 
+          cd src\CymaticLabs.InfluxDB.Studio
+          dotnet build --configuration Release --no-restore
 
       - name: Publish application
         run: dotnet publish --configuration Release --output ./publish_output
