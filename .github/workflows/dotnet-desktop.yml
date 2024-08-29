@@ -36,7 +36,7 @@ jobs:
       id: get_version_info  
       run: |  
         # 从标签中提取版本号，假设标签格式为v1.2.3  
-        $version = ${{ github.ref }} -replace "refs/tags/v", ""  
+        $version = "${{ github.ref }}" -replace "refs/tags/v", ""  
         echo "::set-output name=version::$version"  
       shell: pwsh  
   
