@@ -1,46 +1,39 @@
-name: Build InfluxDBStudio
-
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-  # workflow_dispatch: # Allows manual triggering
-
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build application
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Publish application
-        run: dotnet publish --configuration Release --output ./publish_output
-
-      - name: Zip published files
-        run: |
-          Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip -CompressionLevel Optimal
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ControlTotalIngenieria
-          path: ./ControlTotalIngenieria.zip
-
-      - name: Clean up
-        run: |
-          Remove-Item -Path ./publish_output -Recurse -Force
+name: Build and Publish  
+  
+on:  
+  push:  
+    branches: [ master ]  
+  pull_request:  
+    branches: [ master ]  
+  
+jobs:  
+  build:  
+    runs-on: windows-latest  
+  
+    steps:  
+    - name: Checkout repository
+      uses: actions/checkout@v3  
+  
+    - name: Setup .NET 8  
+      uses: actions/setup-dotnet@v3  
+      with:  
+        dotnet-version: '8.x'  
+  
+    - name: Restore dependencies  
+      run: dotnet restore CymaticLabs.InfluxDB.sln  
+  
+    - name: Build application
+      run: dotnet build CymaticLabs.InfluxDB.sln --configuration Release --no-restore  
+  
+    - name: Publish  
+      run: dotnet publish src/CymaticLabs.InfluxDB.Studio/CymaticLabs.InfluxDB.Studio.csproj --configuration Release --output ./publish_output  
+  
+    - name: Zip Release Artifacts  
+      run: Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip  
+      shell: pwsh  
+  
+    - name: Upload artifact  
+      uses: actions/upload-artifact@v4  
+      with:  
+        name: CymaticLabs.InfluxDB.Studio-Release  
+        path: ./InfluxDBStudio.zip
