@@ -34,7 +34,11 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      run: 
+        git fetch --tags
+        $TAG_NAME=$(git describe --tags)
+        echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+        echo ::set-output name=version_name::$TAG_NAME
       # 从标签中提取版本号，假设标签格式为v1.2.3  
       shell: pwsh  
   
@@ -53,10 +57,10 @@ jobs:
       with:  
         token: ${{ secrets.GITHUB_TOKEN }}  
         artifacts: "./InfluxDBStudio.zip"  
-        tag: ${{ steps.get_version_info.outputs.version }}  
-        name: Release ${{ steps.get_version_info.outputs.version }}  
+        tag: ${{ steps.get_version_info.outputs.version_name }}  
+        name: Release ${{ steps.get_version_info.outputs.version_name }}  
         body: |  
-          Release version: ${{ steps.get_version_info.outputs.version }}  
+          Release version: ${{ steps.get_version_info.outputs.version_name }}  
           This release includes the following changes:  
           - ${{ steps.get_commit_info.outputs.commit_message }}  
         draft: false  
