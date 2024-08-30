@@ -34,11 +34,10 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: 
-        git fetch --tags
-        $TAG_NAME=$(git describe --tags)
-        echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
-        echo ::set-output name=version_name::$TAG_NAME
+      run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+      # git fetch --tags
+      # $TAG_NAME=$(git describe --tags)
+      # echo ::set-output name=version_name::$TAG_NAME
       # 从标签中提取版本号，假设标签格式为v1.2.3  
       shell: pwsh  
   
