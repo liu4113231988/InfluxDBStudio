@@ -56,10 +56,10 @@ jobs:
       with:  
         token: ${{ secrets.GITHUB_TOKEN }}  
         artifacts: "./InfluxDBStudio.zip"  
-        tag: ${{ steps.get_version_info.outputs.version_name }}  
-        name: Release ${{ steps.get_version_info.outputs.version_name }}  
+        tag: ${{ steps.get_version_info.outputs.version }}  
+        name: Release ${{ steps.get_version_info.outputs.version }}  
         body: |  
-          Release version: ${{ steps.get_version_info.outputs.version_name }}  
+          Release version: ${{ steps.get_version_info.outputs.version }}  
           This release includes the following changes:  
           - ${{ steps.get_commit_info.outputs.commit_message }}  
         draft: false  
