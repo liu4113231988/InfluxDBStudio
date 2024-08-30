@@ -26,7 +26,7 @@ jobs:
       run: dotnet build CymaticLabs.InfluxDB.sln --configuration Release --no-restore  
   
     - name: Publish  
-      run: dotnet publish src/CymaticLabs.InfluxDB.Studio/CymaticLabs.InfluxDB.Studio.csproj --configuration Release --output ./publish_output  
+      run: dotnet publish src/CymaticLabs.InfluxDB.Studio/CymaticLabs.InfluxDB.Studio.csproj --configuration Release --output ./publish_output /p:PublishSingleFile=true 
   
     - name: Zip Release Artifacts  
       run: Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip  
