@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Dialogs
 {
     /// <summary>
     /// Dialog used to create a new Continuous Query.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class CreateContinuousQueryDialog : Form
     {
         #region Fields
@@ -42,6 +44,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
 
         #region Constructors
 
+        
         public CreateContinuousQueryDialog()
         {
             InitializeComponent();
@@ -65,6 +68,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
 
         #region Event Handlers
 
+        
         private void CreateContinuousQueryDialog_Load(object sender, EventArgs e)
         {
             // Setup help/info tool tips
@@ -85,6 +89,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         }
 
         // Handle changes to the reample enable/disable check box
+        
         private void resampleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             resampleEveryLabel.Enabled = resampleEveryTextBox.Enabled = resampleCheckBox.Checked;
@@ -92,6 +97,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         }
 
         // Handles closing of the form
+        
         private void CreateContinuousQueryDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -130,6 +136,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// <summary>
         /// Resets the dialog form to its initial state.
         /// </summary>
+        
         public void ResetCqForm()
         {
             // Reset form values
@@ -163,6 +170,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// Binds the form's database drop down to the list of available databases for the 
         /// current connection.
         /// </summary>
+        
         public async Task BindInfluxDataSources()
         {
             try
@@ -194,6 +202,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         }
 
         // Validates the current form values
+        
         bool ValidateCqValues()
         {
             try
@@ -307,6 +316,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// from the current dialog values.
         /// </summary>
         /// <returns>A CQ params object if current values are valid, otherwise NULL.</returns>
+        
         public InfluxDbCqParams CreateCqParamsFromValues()
         {
             if (!ValidateCqValues()) return null;

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
 
@@ -7,6 +8,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Base class for controls that contain and carry out an InfluxDB API request.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class RequestControl : UserControl
     {
         #region Fields

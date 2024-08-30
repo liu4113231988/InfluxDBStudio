@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// Base class that renders information relating to measurements.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class MeasurementControl : RequestControl
     {
         #region Fields

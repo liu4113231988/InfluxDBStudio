@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// A control that executes an InfluxDB query and displays the results.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class QueryControl : RequestControl
     {
         #region Fields
@@ -63,6 +65,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         /// <summary>
         /// Runs the current query against the configured connection and database.
         /// </summary>
+        
         public override async Task ExecuteRequestAsync()
         {
             if (InfluxDbClient == null) throw new Exception("No InfluxDB client available.");

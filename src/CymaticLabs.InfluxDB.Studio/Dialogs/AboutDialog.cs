@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace CymaticLabs.InfluxDB.Studio.Dialogs
@@ -6,6 +7,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
     /// <summary>
     /// Application about dialog.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class AboutDialog : Form
     {
         #region Fields

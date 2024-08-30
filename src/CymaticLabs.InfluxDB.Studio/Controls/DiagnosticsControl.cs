@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using CymaticLabs.InfluxDB.Data;
 
@@ -7,6 +8,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Renders InfluxDB server diagnostics information.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class DiagnosticsControl : RequestControl
     {
         #region Fields

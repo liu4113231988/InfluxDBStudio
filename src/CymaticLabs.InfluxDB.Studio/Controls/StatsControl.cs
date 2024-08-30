@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// Control that displays InfluxDB server stats.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class StatsControl : RequestControl
     {
         #region Fields

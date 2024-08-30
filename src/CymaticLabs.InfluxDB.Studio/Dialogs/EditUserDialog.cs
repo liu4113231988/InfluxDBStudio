@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Runtime.Versioning;
+using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
 
 namespace CymaticLabs.InfluxDB.Studio.Dialogs
@@ -6,6 +7,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
     /// <summary>
     /// Dialog used for editing/updating InfluxDB users.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class EditUserDialog : Form
     {
         #region Fields

@@ -6,12 +6,14 @@ using System.Windows.Forms;
 using ScintillaNET;
 using CymaticLabs.InfluxDB.Data;
 using CymaticLabs.InfluxDB.Studio.Dialogs;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// Control used to list and edit InfluxDB continous queries.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class ContinuousQueryControl : RequestControl
     {
         #region Fields

@@ -6,12 +6,15 @@ using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// Renders the results for a single InfluxDB query.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class QueryResultsControl : UserControl
     {
         #region Fields
@@ -97,6 +100,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         /// </summary>
         /// <param name="result">The query result to render.</param>
         /// <returns>The total number of results found.</returns>
+        
         public int UpdateResults(InfluxDbSeries result, bool clear = false)
         {
             if (result == null) throw new ArgumentNullException("result");
@@ -127,7 +131,8 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             {
                 splitContainer.Panel1Collapsed = true;
             }
-
+            //listView.VirtualMode = true;
+            //listView.set(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
             // Start to update the list view with the new results
             listView.BeginUpdate();
 
@@ -179,6 +184,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         }
 
         // Exports series data to CSV
+        
         async Task ExportToCsv(bool onlySelected = false)
         {
             try
@@ -232,6 +238,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         }
 
         // Exports series data to a JSON array
+        
         void ExportToJson(bool onlySelected = false)
         {
             try
@@ -242,55 +249,9 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Collect the list of points
-                    var array = new List<object>();
-
-                    if (lastResult != null)
-                    {
-                        // Build name lookup
-                        var indexToName = new Dictionary<int, string>();
-
-                        foreach (var colName in lastResult.Columns)
-                        {
-                            if (!indexToName.ContainsKey(indexToName.Count))
-                                indexToName.Add(indexToName.Count, colName);
-                        }
-
-                        // Build selected states from UI state
-                        var selectedByRowId = new Dictionary<int, bool>();
-
-                        for (var i = 0; i < listView.Items.Count; i++)
-                        {
-                            var li = listView.Items[i];
-                            selectedByRowId.Add(i, li.Selected);
-                        }
-
-                        // Convert results to JSON for export
-                        for (var i = 0; i < lastResult.Values.Count; i++)
-                        {
-                            var r = lastResult.Values[i];
-
-                            if (onlySelected && !selectedByRowId[i]) continue;
-
-                            // Convert to outgoing dictionary
-                            var d = new Dictionary<string, object>();
-
-                            for (var x = 0; x < r.Count; x++)
-                            {
-                                var key = indexToName[x];
-                                var value = r[x];
-
-                                if (d.ContainsKey(key)) d[key] = value;
-                                else d.Add(key, value);
-                            }
-
-                            // Add to outgoing json structure
-                            array.Add(d);
-                        }
-                    }
 
                     // Serialize to json
-                    var json = JsonConvert.SerializeObject(array, Formatting.Indented);
+                    var json = GetSelectedItem2Json(onlySelected);
 
                     // Write to disk
                     File.WriteAllText(saveFileDialog.FileName, json);
@@ -303,5 +264,65 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         }
 
         #endregion Methods
+
+        private void copyJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string jsonString = GetSelectedItem2Json(true);
+            Clipboard.SetText(jsonString);
+        }
+
+
+        string GetSelectedItem2Json(bool onlySelected)
+        {
+            var array = new List<object>();
+
+            if (lastResult != null)
+            {
+                // Build name lookup
+                var indexToName = new Dictionary<int, string>();
+
+                foreach (var colName in lastResult.Columns)
+                {
+                    if (!indexToName.ContainsKey(indexToName.Count))
+                        indexToName.Add(indexToName.Count, colName);
+                }
+
+                // Build selected states from UI state
+                var selectedByRowId = new Dictionary<int, bool>();
+
+                for (var i = 0; i < listView.Items.Count; i++)
+                {
+                    var li = listView.Items[i];
+                    selectedByRowId.Add(i, li.Selected);
+                }
+
+                // Convert results to JSON for export
+                for (var i = 0; i < lastResult.Values.Count; i++)
+                {
+                    var r = lastResult.Values[i];
+
+                    if (onlySelected && !selectedByRowId[i]) continue;
+
+                    // Convert to outgoing dictionary
+                    var d = new Dictionary<string, object>();
+
+                    for (var x = 0; x < r.Count; x++)
+                    {
+                        var key = indexToName[x];
+                        var value = r[x];
+
+                        if (d.ContainsKey(key)) d[key] = value;
+                        else d.Add(key, value);
+                    }
+
+                    // Add to outgoing json structure
+                    array.Add(d);
+                }
+            }
+
+            // Serialize to json
+            var json = JsonConvert.SerializeObject(array, Formatting.Indented);
+            return json;
+        }
     }
 }

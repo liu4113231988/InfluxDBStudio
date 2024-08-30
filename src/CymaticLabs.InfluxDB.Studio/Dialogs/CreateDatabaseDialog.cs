@@ -1,10 +1,12 @@
-﻿using System.Windows.Forms;
+﻿using System.Runtime.Versioning;
+using System.Windows.Forms;
 
 namespace CymaticLabs.InfluxDB.Studio.Dialogs
 {
     /// <summary>
     /// Dialog window used to create a new database.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class CreateDatabaseDialog : Form
     {
         #region Fields

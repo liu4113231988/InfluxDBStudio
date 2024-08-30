@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -9,6 +10,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Renders series information for a given measurement.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class SeriesControl : MeasurementControl
     {
         #region Fields

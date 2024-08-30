@@ -5,12 +5,14 @@ using System.Linq;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
 using CymaticLabs.InfluxDB.Studio.Dialogs;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
     /// <summary>
     /// Control for working with Retention Policies.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class RetentionPolicyControl : RequestControl
     {
         #region Fields

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
@@ -6,6 +7,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Custom tab page that allows for extra rendering and functionality.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ExtendedTabPage : TabPage
     {
         #region Fields

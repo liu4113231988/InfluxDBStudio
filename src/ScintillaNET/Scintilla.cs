@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -21,6 +22,7 @@ namespace ScintillaNET
     /// Represents a Scintilla editor control.
     /// </summary>
     [Docking(DockingBehavior.Ask)]
+    [SupportedOSPlatform("windows")]
     public class Scintilla : Control
     {
         #region Fields

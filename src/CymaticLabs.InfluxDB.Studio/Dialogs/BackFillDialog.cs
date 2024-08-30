@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio.Dialogs
 {
     /// <summary>
     /// Used to perform data back fills for aggregate data.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class BackfillDialog : Form
     {
         #region Fields
@@ -41,7 +43,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         #endregion Properties
 
         #region Constructors
-
+        
         public BackfillDialog()
         {
             InitializeComponent();
@@ -66,6 +68,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         #region Event Handlers
 
         // Form Load
+        
         private void BackFillDialog_Load(object sender, EventArgs e)
         {
             // Setup help/info tool tips
@@ -78,6 +81,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         }
 
         // Form Closing
+        
         private void BackfillDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -116,6 +120,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// <summary>
         /// Resets the dialog form to its initial state.
         /// </summary>
+        
         public void ResetBackFillForm()
         {
             // Reset form values
@@ -150,6 +155,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// Binds the form's database drop down to the list of available databases for the 
         /// current connection.
         /// </summary>
+        
         public async Task BindInfluxDataSources()
         {
             try
@@ -181,6 +187,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         }
 
         // Validates the current form values
+        
         bool ValidateBackfillValues()
         {
             try
@@ -260,6 +267,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
         /// from the current dialog values.
         /// </summary>
         /// <returns>A Backfill params object if current values are valid, otherwise NULL.</returns>
+        
         public InfluxDbBackfillParams CreateBackfillParamsFromValues()
         {
             if (!ValidateBackfillValues()) return null;

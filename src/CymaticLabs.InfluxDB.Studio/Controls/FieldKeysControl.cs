@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -7,6 +8,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Renders the field keys for a given measurement.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class FieldKeysControl : MeasurementControl
     {
         #region Fields

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
 
@@ -7,6 +8,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
     /// <summary>
     /// Dialog used for creating Retention Policies.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class RetentionPolicyDialog : Form
     {
         #region Fields

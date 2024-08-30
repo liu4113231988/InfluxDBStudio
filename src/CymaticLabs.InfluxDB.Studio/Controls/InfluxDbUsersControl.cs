@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
@@ -10,6 +11,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// <summary>
     /// Renders InfluxDB user information and allows for basic user management interactions.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class InfluxDbUsersControl : RequestControl
     {
         #region Fields

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,6 +11,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
     /// <summary>
     /// Dialog used to grant InfluxDB users a new privilege.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class GrantPrivilegeDialog : Form
     {
         #region Fields

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 using CymaticLabs.InfluxDB.Data;
 
@@ -14,6 +15,7 @@ namespace CymaticLabs.InfluxDB.Studio.Dialogs
     /// Dialog that contains a list of InfluxDB connections and allows connection
     /// management and the ability to connect.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class ManageConnectionsDialog : Form
     {
         #region Fields

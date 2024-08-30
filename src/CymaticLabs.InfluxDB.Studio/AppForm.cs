@@ -9,12 +9,14 @@ using Newtonsoft.Json;
 using CymaticLabs.InfluxDB.Data;
 using CymaticLabs.InfluxDB.Studio.Controls;
 using CymaticLabs.InfluxDB.Studio.Dialogs;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio
 {
     /// <summary>
     /// The main application form.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class AppForm : Form
     {
         #region Enums
@@ -248,12 +250,14 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Tool Strip
 
         // Manage Connections
+        
         private async void manageConnectionsButton_Click(object sender, EventArgs e)
         {
             await ShowConnectionsDialog();
         }
 
         // Disconnect
+        
         private void disconnectButton_Click(object sender, EventArgs e)
         {
             var node = connectionsTreeView.SelectedNode;
@@ -294,6 +298,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Show Statistics
+        
         private async void showStatsButton_Click(object sender, EventArgs e)
         {
             var node = connectionsTreeView.SelectedNode;
@@ -748,6 +753,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Application
 
         // Import application settings
+        
         async Task ImportSettings(bool showConnectionManage = false)
         {
             try
@@ -778,6 +784,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Export application settings
+        
         void ExportSettings()
         {
             try
@@ -803,6 +810,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Connection
 
         // Loads data under a tree node
+        
         async Task ExpandNodeChildren(TreeNode node)
         {
             try
@@ -834,6 +842,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Refresh
+        
         async Task RefreshConnection(TreeNode node)
         {
             try
@@ -859,6 +868,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Create Database
+        
         async Task CreateDatabase(TreeNode node)
         {
             try
@@ -920,6 +930,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Show Retention Policies
+        
         async Task ShowRetentionPolicies(TreeNode node)
         {
             try
@@ -948,6 +959,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Show Users
+        
         async Task ShowUsers(TreeNode node)
         {
             try
@@ -976,6 +988,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Show Statistics
+        
         async Task ShowStatistics(TreeNode node)
         {
             try
@@ -1004,6 +1017,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Show Diagnostics
+        
         async Task ShowDiagnostics(TreeNode node)
         {
             try
@@ -1032,6 +1046,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Connection -> Disconnect
+        
         void Disconnect(TreeNode node)
         {
             try
@@ -1081,6 +1096,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Database
 
         // Database -> Refresh
+        
         async Task RefreshDatabase(TreeNode node)
         {
             try
@@ -1106,6 +1122,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Database -> Continuous Queries
+        
         async Task ShowContinuousQueries(TreeNode node)
         {
             try
@@ -1137,6 +1154,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Database -> Back Fill
+        
         async Task RunBackFill(TreeNode node)
         {
             try
@@ -1179,6 +1197,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Database -> Drop Database
+        
         async Task DropDatabase(TreeNode node)
         {
             try
@@ -1226,6 +1245,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Measurement
 
         // Measurement -> Show Series
+        
         async Task ShowSeries(TreeNode node)
         {
             try
@@ -1259,6 +1279,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Measurement -> Tag Keys
+        
         async Task ShowTagKeys(TreeNode node)
         {
             try
@@ -1291,6 +1312,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Measurement -> Tag Values
+        
         async Task ShowTagValues(TreeNode node)
         {
             try
@@ -1323,6 +1345,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Measurement - Field Keys
+        
         async Task ShowFieldKeys(TreeNode node)
         {
             try
@@ -1355,6 +1378,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Measurement - Drop Measurement
+        
         async Task DropMeasurement(TreeNode node)
         {
             try
@@ -1399,6 +1423,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Measurement -> Drop Series
+        
         async Task DropSeries(TreeNode node)
         {
             try
@@ -1447,6 +1472,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Queries/Requests
 
         // Database|Measurement -> New Query
+        
         void NewQuery(TreeNode node)
         {
             try
@@ -1500,6 +1526,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Queries -> Show Queries
+        
         async Task ShowQueries(TreeNode node)
         {
             try
@@ -1529,6 +1556,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Executes the current request control's request
+        
         async Task ExecuteCurrentRequest()
         {
             // Execute the query
@@ -1565,6 +1593,7 @@ namespace CymaticLabs.InfluxDB.Studio
 
         #region Settings
 
+        
         // Load application settings
         void ApplySettings()
         {
@@ -1581,6 +1610,7 @@ namespace CymaticLabs.InfluxDB.Studio
             }
 
             // Set date format
+
             if (Settings.DateFormat == AppSettings.DateFormatMonth)
             {
                 // month-first
@@ -1591,20 +1621,9 @@ namespace CymaticLabs.InfluxDB.Studio
                 // day-first
                 dateFormatComboBox.SelectedIndex = 1;
             }
-            if (Settings.TimeDisplay == AppSettings.TimeDisplayDefault)
-            {
-                // default datetime string
-                cbxTimeDisplay.SelectedIndex = 0;
-            }
-            else if (Settings.TimeDisplay == AppSettings.TimeDisplayMilliSecond)
-            {
-                // day-first
-                cbxTimeDisplay.SelectedIndex = 1;
-            }
-            else
-            {
-                cbxTimeDisplay.SelectedIndex = 2;
-            }
+            List<string> displays = [AppSettings.TimeDisplayDefault, AppSettings.TimeDisplayMilliSecond, AppSettings.TimeDisplaySecond];
+            int index = displays.IndexOf(Settings.TimeDisplay);
+            cbxTimeDisplay.SelectedIndex = index;
 
             // Apply untrusted SSL
             allowUntrustedSSLToolStripMenuItem.Checked = Settings.AllowUntrustedSsl;
@@ -1615,6 +1634,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region User Interface
 
         // Updates the state of the tool strip to match the current user interaction
+        
         void UpdateUIState()
         {
             var node = connectionsTreeView.SelectedNode;
@@ -1704,6 +1724,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Determines whether or not a query is in focus that can run
+        
         bool CanRunQuery()
         {
             return tabControl.SelectedTab != null && tabControl.SelectedTab.Controls.Count > 0 && tabControl.SelectedTab.Controls[0] is RequestControl;
@@ -1716,6 +1737,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Utility
 
         // Gets a connection given its tree node.
+        
         InfluxDbConnection GetConnection(TreeNode node)
         {
             TreeNode current = node;
@@ -1744,6 +1766,7 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Rendering
 
         // Updates and shows the connection dialog
+        
         async Task ShowConnectionsDialog()
         {
             // Update the current list of connections in the dialog
@@ -1761,6 +1784,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Adds an InfluxDB connection to the active list
+        
         async Task RenderConnection(InfluxDbConnection connection)
         {
             try
@@ -1787,6 +1811,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Render the connection details of a top-level connection node in the active connections list
+        
         async Task RenderConnectionDetails(TreeNode connectionNode, InfluxDbConnection connection, bool update = false)
         {
             try
@@ -1823,6 +1848,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Renders the database nodes under a connection node
+        
         async Task RenderDatabases(TreeNode connectionNode, InfluxDbClient client)
         {
             try
@@ -1869,6 +1895,7 @@ namespace CymaticLabs.InfluxDB.Studio
         }
 
         // Renders the measurement nodes under a database node
+        
         async Task RenderMeasurements(TreeNode dbNode, InfluxDbClient client)
         {
             try
@@ -1902,18 +1929,21 @@ namespace CymaticLabs.InfluxDB.Studio
         #region Utility
 
         // Gets the InfluxDB type from a given tere node.
+        
         InfluxDbNodeTypes GetNodeType(TreeNode node)
         {
             return (InfluxDbNodeTypes)node.ImageIndex;
         }
 
         // Determines whether or not a tree node is a specific InfluxDB type
+        
         bool IsNodeType(TreeNode node, InfluxDbNodeTypes type)
         {
             return node.ImageIndex == (int)type;
         }
 
         // Returns a specific tree node type
+        
         TreeNode CreateTreeNode(string text, InfluxDbNodeTypes type, object tag = null)
         {
             return new TreeNode(text, (int)type, (int)type) { Tag = tag };
@@ -1926,6 +1956,7 @@ namespace CymaticLabs.InfluxDB.Studio
         /// <summary>
         /// Opens the Back Fill dialog and allows a user to run a back fill query.
         /// </summary>
+        
         public static async Task RunBackFill()
         {
             if (instance == null || instance.connectionsTreeView.SelectedNode == null) return;
@@ -1936,6 +1967,7 @@ namespace CymaticLabs.InfluxDB.Studio
         /// Sets the text of the applications status bar.
         /// </summary>
         /// <param name="text">The text to set.</param>
+        
         public static void SetStatus(string text)
         {
             if (instance == null) return;
@@ -1948,6 +1980,7 @@ namespace CymaticLabs.InfluxDB.Studio
         /// <param name="ex">The exception that occured.</param>
         /// <param name="caption">The optional error message caption to display.</param>
         /// <param name="stackTrace">Determines whether or not the exception's stack trace should be displayed.</param>
+        
         public static void DisplayException(Exception ex, string caption = "Unexpected Error", bool stackTrace = false)
         {
             if (ex == null) throw new ArgumentNullException("ex");
@@ -1973,6 +2006,7 @@ namespace CymaticLabs.InfluxDB.Studio
         /// </summary>
         /// <param name="message">The error message to display.</param>
         /// <param name="caption">The optional error caption to display.</param>
+        
         public static void DisplayError(string message, string caption = "Error")
         {
             if (string.IsNullOrWhiteSpace(message)) throw new ArgumentNullException("message");
@@ -1986,10 +2020,15 @@ namespace CymaticLabs.InfluxDB.Studio
         #endregion Static
 
         #endregion Methods
-
+        
         private void cbxTimeDisplay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.TimeDisplay = cbxTimeDisplay.SelectedIndex == 0 ? null : cbxTimeDisplay.SelectedItem.ToString();
+            string format = null;
+            if (cbxTimeDisplay.SelectedIndex == 2 || cbxTimeDisplay.SelectedIndex == 3)
+            {
+                format = cbxTimeDisplay.SelectedItem.ToString();
+            }
+            Settings.TimeDisplay = format;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
@@ -10,6 +11,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
     /// Custom version of <see cref="TabControl"/> that adds the ability
     /// to close tabs and render custom icons on the tabs and other UI tweaks.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class ExtendedTabControl : TabControl
     {
         #region Fields

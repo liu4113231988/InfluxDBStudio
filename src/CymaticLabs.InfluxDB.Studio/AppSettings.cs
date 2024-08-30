@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CymaticLabs.InfluxDB.Data;
+using System.Runtime.Versioning;
 
 namespace CymaticLabs.InfluxDB.Studio
 {
     /// <summary>
     /// Intermediate object used to import or export application settings.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class AppSettings
     {
         #region Fields
@@ -38,6 +40,8 @@ namespace CymaticLabs.InfluxDB.Studio
         public const string TimeDisplaySecond = "s";
 
         public const string TimeDisplayMilliSecond = "ms";
+
+        public const string TimeDisplayRfc = "YYYY-MM-DDTHH:MM:SS.nnnz";
 
 
         // Whether or not to allow untrusted SSL certificates
