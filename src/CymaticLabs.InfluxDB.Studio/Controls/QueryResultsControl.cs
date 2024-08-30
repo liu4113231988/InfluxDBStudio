@@ -40,6 +40,8 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         /// </summary>
         public string Database { get; set; }
 
+        public string TimeDisplayFormat { get; set; }
+
         #endregion Properties
 
         #region Constructors
@@ -100,7 +102,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         /// </summary>
         /// <param name="result">The query result to render.</param>
         /// <returns>The total number of results found.</returns>
-        
+
         public int UpdateResults(InfluxDbSeries result, bool clear = false)
         {
             if (result == null) throw new ArgumentNullException("result");
@@ -139,7 +141,11 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             // Build the first column
             var colRecordNum = new ColumnHeader() { Text = "#" };
             listView.Columns.Add(colRecordNum);
-
+            int index = -1;
+            if (TimeDisplayFormat == null)
+            {
+                index = result.Columns.IndexOf("time");
+            }
             // Build the dynamic columns
             foreach (var c in result.Columns)
             {
@@ -162,9 +168,17 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                 {
                     // Get the value
                     var v = r[x];
-
                     // Attach the column values as subitems
-                    var li2 = new ListViewItem.ListViewSubItem(li, v != null ? v.ToString() : null);
+                    string val = null;
+                    if (index == x)
+                    {
+                        val = DateTimeOffset.FromUnixTimeMilliseconds((long)v).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    }
+                    else
+                    {
+                        val = v != null ? v.ToString() : null;
+                    }
+                    var li2 = new ListViewItem.ListViewSubItem(li, val);
                     li2.Tag = r;
                     li.SubItems.Add(li2);
                 }
@@ -184,7 +198,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         }
 
         // Exports series data to CSV
-        
+
         async Task ExportToCsv(bool onlySelected = false)
         {
             try
@@ -238,7 +252,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         }
 
         // Exports series data to a JSON array
-        
+
         void ExportToJson(bool onlySelected = false)
         {
             try

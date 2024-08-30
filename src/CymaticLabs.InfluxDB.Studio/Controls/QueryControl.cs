@@ -65,7 +65,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         /// <summary>
         /// Runs the current query against the configured connection and database.
         /// </summary>
-        
+
         public override async Task ExecuteRequestAsync()
         {
             if (InfluxDbClient == null) throw new Exception("No InfluxDB client available.");
@@ -82,9 +82,9 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
 
             // Start timing...
             stopWatch.Restart();
-
+            string displayFormat = TimeDisplay == null ? "ms" : TimeDisplay;
             // Execute the query
-            var results = await InfluxDbClient.QueryAsync(Database, query, TimeDisplay);
+            var results = await InfluxDbClient.QueryAsync(Database, query, displayFormat);
 
             // Stop timing...
             stopWatch.Stop();
@@ -104,6 +104,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                     var queryResultsControl = new QueryResultsControl();
                     queryResultsControl.InfluxDbClient = InfluxDbClient;
                     queryResultsControl.Database = Database;
+                    queryResultsControl.TimeDisplayFormat = TimeDisplay;
                     queryResultsControl.Dock = DockStyle.Fill;
                     tab.Controls.Add(queryResultsControl);
 
