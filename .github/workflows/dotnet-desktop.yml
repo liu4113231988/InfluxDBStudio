@@ -38,10 +38,10 @@ jobs:
         TAG: ${{ github.tag }}
       run: 
         # 使用 Git 命令获取最新 tag
-        $latest_tag=$(git describe --tags --abbrev=0)
+        latest_tag=$(git describe --tags --abbrev=0)
         echo "Latest tag:$latest_tag"
         echo "::set-output name=tag_name::$latest_tag"
-        $version=${TAG#v}
+        $version=${latest_tag#v}
         echo "::set-output name=version::$version"
       shell: pwsh  
   
