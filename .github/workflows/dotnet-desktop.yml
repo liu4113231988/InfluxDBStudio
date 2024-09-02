@@ -37,7 +37,7 @@ jobs:
       env:
         TAG: ${{ github.ref }}
       run: 
-        if ([[ TAG == *"v"* ]]); then
+        if ([[TAG==*"v"*]]); then
           echo "::set-output name=version::${TAG##*/}"
         else
           echo "There is no github tag reference, skipping"
