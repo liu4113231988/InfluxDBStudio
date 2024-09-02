@@ -41,6 +41,7 @@
             splitContainer = new System.Windows.Forms.SplitContainer();
             tagsTextBox = new System.Windows.Forms.TextBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            copyCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
@@ -67,13 +68,13 @@
             // 
             contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { exportAllToolStripMenuItem, exportSelectedToolStripMenuItem });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new System.Drawing.Size(168, 48);
+            contextMenuStrip.Size = new System.Drawing.Size(181, 70);
             // 
             // exportAllToolStripMenuItem
             // 
             exportAllToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { exportAllCsvToolStripMenuItem, jSONToolStripMenuItem });
             exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
-            exportAllToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            exportAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             exportAllToolStripMenuItem.Text = "Export All";
             // 
             // exportAllCsvToolStripMenuItem
@@ -92,9 +93,9 @@
             // 
             // exportSelectedToolStripMenuItem
             // 
-            exportSelectedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { exportSelectedCsvToolStripMenuItem, jSONToolStripMenuItem1, copyJSONToolStripMenuItem });
+            exportSelectedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { exportSelectedCsvToolStripMenuItem, jSONToolStripMenuItem1, copyJSONToolStripMenuItem, copyCSVToolStripMenuItem });
             exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
-            exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             exportSelectedToolStripMenuItem.Text = "Export Selected";
             // 
             // exportSelectedCsvToolStripMenuItem
@@ -149,6 +150,13 @@
             tagsTextBox.Size = new System.Drawing.Size(803, 32);
             tagsTextBox.TabIndex = 1;
             // 
+            // copyCSVToolStripMenuItem
+            // 
+            copyCSVToolStripMenuItem.Name = "copyCSVToolStripMenuItem";
+            copyCSVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            copyCSVToolStripMenuItem.Text = "Copy CSV";
+            copyCSVToolStripMenuItem.Click += copyCSVToolStripMenuItem_Click;
+            // 
             // QueryResultsControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -179,5 +187,6 @@
         private System.Windows.Forms.ToolStripMenuItem jSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem jSONToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem copyJSONToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyCSVToolStripMenuItem;
     }
 }

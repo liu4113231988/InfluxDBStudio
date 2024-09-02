@@ -7,7 +7,6 @@ using System.IO;
 using Newtonsoft.Json;
 using CymaticLabs.InfluxDB.Data;
 using System.Runtime.Versioning;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CymaticLabs.InfluxDB.Studio.Controls
 {
@@ -337,6 +336,38 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             // Serialize to json
             var json = JsonConvert.SerializeObject(array, Formatting.Indented);
             return json;
+        }
+
+        private void copyCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+            bool onlySelected = true;
+            // Write the CSV column names (skip first column which is just row # label)
+            string column = "";
+            for (var i = 1; i < listView.Columns.Count; i++)
+            {
+                column += listView.Columns[i].Text;
+                if (i < listView.Columns.Count - 1) column += ",";
+            }
+            sb.AppendLine(column);
+
+
+            // Now write each series row
+            foreach (ListViewItem li in listView.Items)
+            {
+                if (onlySelected && !li.Selected) continue;
+
+                // (skip first column which is just row # label)
+                string content = "";
+                for (var i = 1; i < li.SubItems.Count; i++)
+                {
+                    var sli = li.SubItems[i];
+                    content += sli.Text;
+                    if (i < li.SubItems.Count - 1) content += ",";
+                }
+                sb.AppendLine(content);
+            }
+            Clipboard.SetText(sb.ToString());
         }
     }
 }
