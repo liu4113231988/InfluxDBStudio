@@ -1,10 +1,11 @@
 name: Build and Publish  
   
 on:  
-  push:  
-    branches: [ master ]   
-    tags:  
-       - 'v*' # 触发条件为push带有v前缀的标签
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'pls input tag name'
+        required: true
   
 jobs:  
   build:  
@@ -37,13 +38,7 @@ jobs:
     - name: Fetch Tag  
       id: git_fetch_tag  
       run: git fetch --tags
-
-    - name: Get Version Info  
-      id: get_version_info  
-      run: echo "::set-output name=version::=git describe --tags --abbrev=0"
-      shell: pwsh
-  
-  
+ 
     - name: Get Commit Info  
       id: get_commit_info  
       run: |  
@@ -58,10 +53,10 @@ jobs:
       with:  
         token: ${{ secrets.GITHUB_TOKEN }}  
         artifacts: "./InfluxDBStudio.zip"  
-        tag: ${{ steps.get_version_info.outputs.version }}  
-        name: Release ${{ steps.get_version_info.outputs.version }}  
+        tag: ${{ github.event.inputs.version_name }}  
+        name: Release ${{github.event.inputs.version_name }}  
         body: |  
-          Release version: ${{ steps.get_version_info.outputs.version }}  
+          Release version: ${{github.event.inputs.version_name }}  
           This release includes the following changes:  
           - ${{ steps.get_commit_info.outputs.commit_message }}  
         draft: false  
