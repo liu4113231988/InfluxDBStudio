@@ -40,7 +40,7 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: echo "version=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
+      run: echo "::set-output name=version::=`echo $(git describe --tags --abbrev=0)`"
       shell: pwsh
   
   
