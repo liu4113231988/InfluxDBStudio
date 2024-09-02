@@ -34,11 +34,14 @@ jobs:
       run: Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip  
       shell: pwsh  
 
+    - name: Fetch Tag  
+      id: git_fetch_tag  
+      run: git fetch --tags
+
     - name: Get Version Info  
       id: get_version_info  
       run: 
         # 使用 Git 命令获取最新 tag
-        $tag_list = git fetch --tags
         $latest_tag = git describe --tags --abbrev=0
         echo "Latest tag:$latest_tag"
         echo "::set-output name=tag_name::$latest_tag"
