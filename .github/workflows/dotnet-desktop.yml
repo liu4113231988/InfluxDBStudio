@@ -38,7 +38,7 @@ jobs:
       id: get_version_info  
       run: 
         # 使用 Git 命令获取最新 tag
-        git fetch --tags
+        $tag_list = git fetch --tags
         $latest_tag = git describe --tags --abbrev=0
         echo "Latest tag:$latest_tag"
         echo "::set-output name=tag_name::$latest_tag"
