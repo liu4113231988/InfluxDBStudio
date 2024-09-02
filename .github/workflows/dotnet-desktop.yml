@@ -34,11 +34,14 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
-      # git fetch --tags
-      # $TAG_NAME=$(git describe --tags)
-      # echo ::set-output name=version_name::$TAG_NAME
-      # 从标签中提取版本号，假设标签格式为v1.2.3  
+      run: 
+        ref='refs/tags/v'
+        if [[ ${{ github.ref }} == *"v"* ]]; then
+          echo "::set-output name=version::${ref##*/}"
+        else
+          echo "There is no github tag reference, skipping"
+          exit 78
+        fi
       shell: pwsh  
   
   
