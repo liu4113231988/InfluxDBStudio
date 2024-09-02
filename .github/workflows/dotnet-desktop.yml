@@ -34,8 +34,6 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      env:
-        TAG: ${{ github.tag }}
       run: 
         # 使用 Git 命令获取最新 tag
         $latest_tag = git describe --tags --abbrev=0
