@@ -40,7 +40,7 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: echo "::set-output name=version::=`echo $(git describe --tags --abbrev=0)`"
+      run: echo "::set-output name=version::=git describe --tags --abbrev=0"
       shell: pwsh
   
   
