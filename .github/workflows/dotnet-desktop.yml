@@ -40,10 +40,7 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
-      run: 
-        # 使用 Git 命令获取最新 tag
-        $latest_tag = git describe --tags --abbrev=0
-        echo "::set-output name=version::$latest_tag"
+      run: echo "version=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
       shell: pwsh
   
   
