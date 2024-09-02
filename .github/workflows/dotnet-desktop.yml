@@ -34,10 +34,11 @@ jobs:
 
     - name: Get Version Info  
       id: get_version_info  
+      env:
+        TAG: ${{ github.ref }}
       run: 
-        ref='refs/tags/v'
-        if [[ ${{ github.ref }} == *"v"* ]]; then
-          echo "::set-output name=version::${ref##*/}"
+        if [[ TAG == *"v"* ]]; then
+          echo "::set-output name=version::${TAG##*/}"
         else
           echo "There is no github tag reference, skipping"
           exit 78
