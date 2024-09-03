@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       version_name:
-        description: 'pls input tag name'
+        description: 'please input version name'
+        required: true
+      version_desc:
+        description: 'please input version description'
         required: true
   
 jobs:  
@@ -44,8 +47,8 @@ jobs:
       id: get_commit_info  
       run: |  
         # 获取最近一次commit的信息，你可以根据需要调整这个命令  
-        $commitInfo = git log -1 --pretty=format:"%s"  
-        echo "::set-output name=commit_message::$commitInfo"  
+        # $commitInfo = git log -1 --pretty=format:"%s"  
+        # echo "::set-output name=commit_message::$commitInfo"  
       shell: pwsh  
   
     - name: Create Release  
@@ -59,6 +62,6 @@ jobs:
         body: |  
           Release version: ${{github.event.inputs.version_name }}  
           This release includes the following changes:  
-          - ${{ steps.get_commit_info.outputs.commit_message }}  
+          - ${{ github.event.inputs.version_desc }}  
         draft: false  
         prerelease: false
