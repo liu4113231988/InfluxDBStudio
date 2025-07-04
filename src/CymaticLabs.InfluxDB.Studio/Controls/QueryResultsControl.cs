@@ -171,7 +171,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                     string val = null;
                     if (index == x)
                     {
-                        val = DateTimeOffset.FromUnixTimeMilliseconds((long)v).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        val = DateTimeOffset.FromUnixTimeMilliseconds((long)v).DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff");
                     }
                     else
                     {

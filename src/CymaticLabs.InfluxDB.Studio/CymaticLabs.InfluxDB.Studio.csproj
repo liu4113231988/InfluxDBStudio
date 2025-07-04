@@ -6,8 +6,12 @@
     <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
-	  <PublishSingleFile>true</PublishSingleFile>
+	<PublishSingleFile>true</PublishSingleFile>
+	<RuntimeIdentifiers>win-x64;</RuntimeIdentifiers>
+	<!-- 支持包含本机库的自解压功能 -->
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Controls\ExtendedTabControl.cs">
@@ -65,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\AppIcon.ico" />
     <Content Include="Resources\RP_Duration_Info.txt" />
   </ItemGroup>
   <ItemGroup>
