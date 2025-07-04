@@ -1,18 +1,25 @@
 name: Build and Publish  
   
 on:  
-  push:  
-    branches: [ master ]   
-    tags:  
-       - 'v*' # 触发条件为push带有v前缀的标签
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'please input version name'
+        required: true
+      version_desc:
+        description: 'please input version description'
+        required: true
   
 jobs:  
   build:  
+    if: github.actor == github.repository_owner
     runs-on: windows-latest  
   
     steps:  
     - name: Checkout repository
       uses: actions/checkout@v3  
+      with:
+        fetch-depth: 0 # 获取完整的 Git 历史记录
   
     - name: Setup .NET 8  
       uses: actions/setup-dotnet@v3  
@@ -32,24 +39,16 @@ jobs:
       run: Compress-Archive -Path ./publish_output/* -DestinationPath ./InfluxDBStudio.zip  
       shell: pwsh  
 
-    - name: Get Version Info  
-      id: get_version_info  
-      run: 
-        # 使用 Git 命令获取最新 tag
-        $latest_tag = git describe --tags --abbrev=0
-        echo "Latest tag:$latest_tag"
-        echo "::set-output name=tag_name::$latest_tag"
-        $version=${latest_tag#v}
-        echo "::set-output name=version::$version"
-      shell: pwsh  
-  
-  
+    - name: Fetch Tag  
+      id: git_fetch_tag  
+      run: git fetch --tags
+ 
     - name: Get Commit Info  
       id: get_commit_info  
       run: |  
         # 获取最近一次commit的信息，你可以根据需要调整这个命令  
-        $commitInfo = git log -1 --pretty=format:"%s"  
-        echo "::set-output name=commit_message::$commitInfo"  
+        # $commitInfo = git log -1 --pretty=format:"%s"  
+        # echo "::set-output name=commit_message::$commitInfo"  
       shell: pwsh  
   
     - name: Create Release  
@@ -58,11 +57,11 @@ jobs:
       with:  
         token: ${{ secrets.GITHUB_TOKEN }}  
         artifacts: "./InfluxDBStudio.zip"  
-        tag: ${{ steps.get_version_info.outputs.version }}  
-        name: Release ${{ steps.get_version_info.outputs.version }}  
+        tag: ${{ github.event.inputs.version_name }}  
+        name: Release ${{github.event.inputs.version_name }}  
         body: |  
-          Release version: ${{ steps.get_version_info.outputs.version }}  
+          Release version: ${{github.event.inputs.version_name }}  
           This release includes the following changes:  
-          - ${{ steps.get_commit_info.outputs.commit_message }}  
+          - ${{ github.event.inputs.version_desc }}  
         draft: false  
         prerelease: false
