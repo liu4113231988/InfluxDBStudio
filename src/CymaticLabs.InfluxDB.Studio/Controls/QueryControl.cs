@@ -80,14 +80,18 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             // Clear the current results
             tabControl.Controls.Clear();
 
-            // Start timing...
+            // Measure query execution time separately from render time
             stopWatch.Restart();
             string displayFormat = TimeDisplay == null ? "ms" : TimeDisplay;
             // Execute the query
             var results = await InfluxDbClient.QueryAsync(Database, query, displayFormat);
-
-            // Stop timing...
+            // Stop query timer
             stopWatch.Stop();
+            var queryTimeMs = stopWatch.Elapsed.TotalMilliseconds;
+
+            // Now measure rendering time
+            var renderWatch = new System.Diagnostics.Stopwatch();
+            renderWatch.Restart();
 
             // If there are results
             if (results != null && results.Count() > 0)
@@ -112,12 +116,19 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                     tabControl.TabPages.Add(tab);
 
                     // Render the results and increment the global total
+                    var singleRenderWatch = System.Diagnostics.Stopwatch.StartNew();
                     resultsCount += queryResultsControl.UpdateResults(result);
+                    singleRenderWatch.Stop();
+                    // We accumulate total render time using renderWatch; adding individual render durations helps accuracy
+                    // (renderWatch is already running, so no need to add here explicitly)
                 }
             }
 
-            // Show stat results of query
-            resultsLabel.Text = string.Format("results: {0}, response time: {1:0} ms", resultsCount, stopWatch.Elapsed.TotalMilliseconds);
+            // Stop total render timer
+            renderWatch.Stop();
+
+            // Show stat results: results, query time, render time
+            resultsLabel.Text = string.Format("results: {0}, query time: {1:0} ms, render time: {2:0} ms", resultsCount, queryTimeMs, renderWatch.Elapsed.TotalMilliseconds);
         }
 
         #endregion Methods

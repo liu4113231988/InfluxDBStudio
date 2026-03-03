@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
@@ -23,6 +24,11 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
 
         // A cache of the last results received.
         InfluxDbSeries lastResult;
+
+        // Cache for virtual mode rendering
+        private List<List<object>> cachedValues;
+        private List<string> cachedColumns;
+        private int timeColumnIndex = -1;
 
         #endregion Fields
 
@@ -48,6 +54,11 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         public QueryResultsControl()
         {
             InitializeComponent();
+            
+            // Setup virtual mode for better performance with large datasets
+            listView.VirtualMode = true;
+            listView.RetrieveVirtualItem += ListView_RetrieveVirtualItem;
+            listView.CacheVirtualItems += ListView_CacheVirtualItems;
         }
 
         #endregion Constructors
@@ -110,7 +121,13 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             lastResult = result;
 
             // Clear as needed
-            if (clear) ClearResults();
+            if (clear)
+            {
+                ClearResults();
+                cachedValues = null;
+                cachedColumns = null;
+                timeColumnIndex = -1;
+            }
 
             // Add tag values to to results
             if (result.Tags.Count > 0)
@@ -132,19 +149,33 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             {
                 splitContainer.Panel1Collapsed = true;
             }
-            //listView.VirtualMode = true;
-            //listView.set(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+
+            // Cache columns and values for virtual mode
+            cachedColumns = result.Columns != null ? result.Columns.ToList() : new List<string>();
+            cachedValues = result.Values != null
+                ? result.Values.Select(r => r != null ? r.ToList() : new List<object>()).ToList()
+                : new List<List<object>>();
+            
+            // Find time column index
+            if (TimeDisplayFormat == null)
+            {
+                timeColumnIndex = result.Columns.IndexOf("time");
+            }
+            else
+            {
+                timeColumnIndex = -1;
+            }
+
             // Start to update the list view with the new results
             listView.BeginUpdate();
+
+            // Clear existing columns and items
+            listView.Columns.Clear();
 
             // Build the first column
             var colRecordNum = new ColumnHeader() { Text = "#" };
             listView.Columns.Add(colRecordNum);
-            int index = -1;
-            if (TimeDisplayFormat == null)
-            {
-                index = result.Columns.IndexOf("time");
-            }
+
             // Build the dynamic columns
             foreach (var c in result.Columns)
             {
@@ -153,35 +184,10 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                 listView.Columns.Add(col);
             }
 
-            // Build the rows
-            for (var i = 0; i < result.Values.Count; i++)
-            {
-                // Create the top level row item and give it the record number as a label
-                ListViewItem li = new ListViewItem((++resultsCount).ToString());
-                listView.Items.Add(li);
-
-                // Get the columns/values for the row
-                var r = result.Values[i];
-
-                for (var x = 0; x < r.Count; x++)
-                {
-                    // Get the value
-                    var v = r[x];
-                    // Attach the column values as subitems
-                    string val = null;
-                    if (index == x)
-                    {
-                        val = DateTimeOffset.FromUnixTimeMilliseconds((long)v).DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff");
-                    }
-                    else
-                    {
-                        val = v != null ? v.ToString() : null;
-                    }
-                    var li2 = new ListViewItem.ListViewSubItem(li, val);
-                    li2.Tag = r;
-                    li.SubItems.Add(li2);
-                }
-            }
+            // Set the virtual list size to the number of rows
+            int itemCount = result.Values.Count;
+            listView.VirtualListSize = itemCount;
+            resultsCount += itemCount;
 
             // Resize each column
             if (listView.Columns.Count > 0)
@@ -225,21 +231,48 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                         await sw.WriteLineAsync(sb.ToString());
 
                         // Now write each series row
-                        foreach (ListViewItem li in listView.Items)
+                        if (cachedValues != null && cachedColumns != null)
                         {
-                            if (onlySelected && !li.Selected) continue;
-
-                            sb.Clear();
-
-                            // (skip first column which is just row # label)
-                            for (var i = 1; i < li.SubItems.Count; i++)
+                            for (var rowIndex = 0; rowIndex < cachedValues.Count; rowIndex++)
                             {
-                                var sli = li.SubItems[i];
-                                sb.Append(sli.Text);
-                                if (i < li.SubItems.Count - 1) sb.Append(",");
-                            }
+                                // Check if row is selected if required (use SelectedIndices for virtual mode)
+                                if (onlySelected && !listView.SelectedIndices.Contains(rowIndex))
+                                {
+                                    continue;
+                                }
 
-                            await sw.WriteLineAsync(sb.ToString());
+                                sb.Clear();
+                                var row = cachedValues[rowIndex];
+
+                                // Write column values (skip first which is row number)
+                                for (var i = 0; i < row.Count; i++)
+                                {
+                                    var v = row[i];
+                                    string val = null;
+
+                                    // Format time column if needed
+                                    if (timeColumnIndex == i && v != null)
+                                    {
+                                        if (v is long longValue)
+                                        {
+                                            val = DateTimeOffset.FromUnixTimeMilliseconds(longValue).DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff");
+                                        }
+                                        else
+                                        {
+                                            val = v.ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        val = v != null ? v.ToString() : null;
+                                    }
+
+                                    sb.Append(val);
+                                    if (i < row.Count - 1) sb.Append(",");
+                                }
+
+                                await sw.WriteLineAsync(sb.ToString());
+                            }
                         }
                     }
                 }
@@ -276,6 +309,70 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             }
         }
 
+        /// <summary>
+        /// Event handler for retrieving virtual items on demand.
+        /// This is called by the ListView when it needs to display items.
+        /// </summary>
+        private void ListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            if (cachedValues == null || e.ItemIndex >= cachedValues.Count)
+                return;
+
+            try
+            {
+                var rowData = cachedValues[e.ItemIndex];
+                var rowNumber = e.ItemIndex + 1;
+
+                // Create the list view item with the row number
+                var li = new ListViewItem(rowNumber.ToString());
+
+                // Add subitems for each column
+                for (var x = 0; x < rowData.Count; x++)
+                {
+                    var v = rowData[x];
+                    string val = null;
+
+                    // Format time column if needed
+                    if (timeColumnIndex == x && v != null)
+                    {
+                        if (v is long longValue)
+                        {
+                            val = DateTimeOffset.FromUnixTimeMilliseconds(longValue).DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        }
+                        else
+                        {
+                            val = v.ToString();
+                        }
+                    }
+                    else
+                    {
+                        val = v != null ? v.ToString() : null;
+                    }
+
+                    var subItem = new ListViewItem.ListViewSubItem(li, val);
+                    subItem.Tag = rowData;
+                    li.SubItems.Add(subItem);
+                }
+
+                e.Item = li;
+            }
+            catch (Exception ex)
+            {
+                AppForm.Log?.Error("Error retrieving virtual item", ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for caching virtual items.
+        /// This is called to optimize rendering performance.
+        /// </summary>
+        private void ListView_CacheVirtualItems(object sender, CacheVirtualItemsEventArgs e)
+        {
+            // This event is used to cache items as they are needed for display
+            // In our implementation, we keep all data in memory, so this is a no-op
+            // But we keep the handler for potential future optimizations
+        }
+
         #endregion Methods
 
         private void copyJSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -300,13 +397,12 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
                         indexToName.Add(indexToName.Count, colName);
                 }
 
-                // Build selected states from UI state
+                // Build selected states from UI state (use SelectedIndices for virtual mode)
                 var selectedByRowId = new Dictionary<int, bool>();
 
-                for (var i = 0; i < listView.Items.Count; i++)
+                for (var i = 0; i < lastResult.Values.Count; i++)
                 {
-                    var li = listView.Items[i];
-                    selectedByRowId.Add(i, li.Selected);
+                    selectedByRowId.Add(i, listView.SelectedIndices.Contains(i));
                 }
 
                 // Convert results to JSON for export
@@ -342,6 +438,7 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
         {
             var sb = new StringBuilder();
             bool onlySelected = true;
+            
             // Write the CSV column names (skip first column which is just row # label)
             string column = "";
             for (var i = 1; i < listView.Columns.Count; i++)
@@ -351,22 +448,50 @@ namespace CymaticLabs.InfluxDB.Studio.Controls
             }
             sb.AppendLine(column);
 
-
             // Now write each series row
-            foreach (ListViewItem li in listView.Items)
+            if (cachedValues != null && cachedColumns != null)
             {
-                if (onlySelected && !li.Selected) continue;
-
-                // (skip first column which is just row # label)
-                string content = "";
-                for (var i = 1; i < li.SubItems.Count; i++)
+                for (var rowIndex = 0; rowIndex < cachedValues.Count; rowIndex++)
                 {
-                    var sli = li.SubItems[i];
-                    content += sli.Text;
-                    if (i < li.SubItems.Count - 1) content += ",";
+                    // Check if row is selected if required (use SelectedIndices for virtual mode)
+                    if (onlySelected && !listView.SelectedIndices.Contains(rowIndex))
+                    {
+                        continue;
+                    }
+
+                    var row = cachedValues[rowIndex];
+                    string content = "";
+
+                    // Write column values
+                    for (var i = 0; i < row.Count; i++)
+                    {
+                        var v = row[i];
+                        string val = null;
+
+                        // Format time column if needed
+                        if (timeColumnIndex == i && v != null)
+                        {
+                            if (v is long longValue)
+                            {
+                                val = DateTimeOffset.FromUnixTimeMilliseconds(longValue).DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
+                            else
+                            {
+                                val = v.ToString();
+                            }
+                        }
+                        else
+                        {
+                            val = v != null ? v.ToString() : null;
+                        }
+
+                        content += val;
+                        if (i < row.Count - 1) content += ",";
+                    }
+                    sb.AppendLine(content);
                 }
-                sb.AppendLine(content);
             }
+
             Clipboard.SetText(sb.ToString());
         }
     }
